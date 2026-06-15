@@ -4,14 +4,18 @@ crm-service/app/main.py — FastAPI application entry point.
 Design:
   - CORS is wide-open ("*") for local dev. In production, restrict
     allow_origins to your actual frontend domain.
-  - StaticFiles mount is commented out — uncomment after running
-    `npm run build` inside crm-service/frontend/.
+  - StaticFiles serves the built React app from frontend/dist/ in
+    production. The mount is guarded by os.path.exists() so it
+    doesn't crash in dev when the dist folder hasn't been built yet.
   - All routers share a consistent /api/* prefix for easy nginx proxying.
 """
 
+import os
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-# from fastapi.staticfiles import StaticFiles  # Uncomment after frontend build
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import customers, campaigns, segments, receipts, analytics, ai
 
@@ -46,5 +50,9 @@ async def health():
     return {"status": "ok", "service": "crm"}
 
 
-# ── Frontend (uncomment after: cd frontend && npm run build) ──────────────────
-# app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
+# ── Frontend — serve built React app in production ────────────────────────────
+# The dist/ folder only exists after `cd frontend && npm run build`.
+# In dev (no dist/), this block is skipped and Vite handles the frontend.
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+if FRONTEND_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Sparkles, Rocket, X, MessageCircle, Mail, MessageSquare, Radio } from 'lucide-react'
-import { getCampaigns, getSegments, createCampaign, launchCampaign, aiWriteMessage } from '../api'
+import { getAnalyticsCampaigns, getSegments, createCampaign, launchCampaign, aiWriteMessage } from '../api'
 import { StatusBadge, ChannelBadge, Loader, timeAgo } from '../components/ui'
 
 const CHANNELS = [
@@ -15,7 +15,7 @@ export default function Campaigns() {
   const [campaigns, setCampaigns] = useState(null)
   const [showWizard, setShowWizard] = useState(false)
 
-  const load = () => getCampaigns().then((d) => setCampaigns(Array.isArray(d) ? d : d?.items || [])).catch(() => setCampaigns([]))
+  const load = () => getAnalyticsCampaigns().then((d) => setCampaigns(Array.isArray(d) ? d : [])).catch(() => setCampaigns([]))
   useEffect(() => { load() }, [])
 
   const launch = async (id) => {
@@ -49,10 +49,10 @@ export default function Campaigns() {
             const delivered = c.delivered ?? c.delivered_count ?? 0
             const fillPct = sent > 0 ? (delivered / sent) * 100 : 0
             return (
-              <div key={c.id} className="card lift">
+              <div key={c.campaign_id || c.id} className="card lift">
                 <div className="spread">
                   <div>
-                    <Link to={`/campaigns/${c.id}`} style={{ color: 'var(--text)', textDecoration: 'none', fontWeight: 600, fontSize: 15 }}>
+                    <Link to={`/campaigns/${c.campaign_id || c.id}`} style={{ color: 'var(--text)', textDecoration: 'none', fontWeight: 600, fontSize: 15 }}>
                       {c.name}
                     </Link>
                     <div className="row mt-4" style={{ gap: 8 }}>
@@ -63,9 +63,9 @@ export default function Campaigns() {
                   </div>
                   <div className="row">
                     {c.status === 'draft' && (
-                      <button className="btn btn-primary btn-sm" onClick={() => launch(c.id)}><Rocket size={13} /> Launch</button>
+                      <button className="btn btn-primary btn-sm" onClick={() => launch(c.campaign_id || c.id)}><Rocket size={13} /> Launch</button>
                     )}
-                    <Link to={`/campaigns/${c.id}`} className="btn btn-ghost btn-sm">Details</Link>
+                    <Link to={`/campaigns/${c.campaign_id || c.id}`} className="btn btn-ghost btn-sm">Details</Link>
                   </div>
                 </div>
                 {sent > 0 && (

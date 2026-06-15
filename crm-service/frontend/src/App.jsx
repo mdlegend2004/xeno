@@ -9,10 +9,10 @@ import Assistant from './pages/Assistant'
 
 const CoffeeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-    <path d="M5 3h11l1.5 9H5L6.5 3z" fill="rgba(3,32,29,0.9)" stroke="rgba(3,32,29,0.5)" strokeWidth="0.5"/>
-    <path d="M5 12c0 3.5 2.5 6 6 6s6-2.5 6-6" stroke="rgba(3,32,29,0.7)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-    <path d="M16.5 7.5 C18 7.5 19.5 8.5 19.5 10 C19.5 11.5 18 12.5 16.5 12.5" stroke="rgba(3,32,29,0.7)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-    <rect x="4" y="18" width="13" height="2" rx="1" fill="rgba(3,32,29,0.7)"/>
+    <path d="M5 3h11l1.5 9H5L6.5 3z" fill="rgba(3,32,29,0.9)" stroke="rgba(3,32,29,0.5)" strokeWidth="0.5" />
+    <path d="M5 12c0 3.5 2.5 6 6 6s6-2.5 6-6" stroke="rgba(3,32,29,0.7)" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+    <path d="M16.5 7.5 C18 7.5 19.5 8.5 19.5 10 C19.5 11.5 18 12.5 16.5 12.5" stroke="rgba(3,32,29,0.7)" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+    <rect x="4" y="18" width="13" height="2" rx="1" fill="rgba(3,32,29,0.7)" />
   </svg>
 )
 
@@ -66,7 +66,6 @@ export default function App() {
 
         <div className="sidebar-foot">
           AI-native CRM for <b>BrewCo</b> coffee chain.
-          <br />Xeno assignment · 2026
         </div>
       </aside>
 

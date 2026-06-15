@@ -1,5 +1,6 @@
 fastapi
 uvicorn[standard]
+gunicorn
 sqlalchemy[asyncio]
 asyncpg
 alembic
@@ -10,3 +11,4 @@ python-dotenv
 openai
 faker
 python-multipart
+aiofiles

@@ -1,0 +1,61 @@
+# render.yaml — Render Blueprint (Infrastructure-as-Code)
+#
+# Deploy all 3 resources at once:
+#   Render Dashboard → New → Blueprint → connect this repo
+#
+# Env vars like OPENAI_API_KEY must be set manually in the dashboard
+# (they are marked sync: false so Render won't overwrite them).
+
+databases:
+  - name: brewco-db
+    plan: free
+    databaseName: brewco
+    user: brewco
+
+services:
+  # ── CRM Backend + Frontend ─────────────────────────────────────────────────
+  - type: web
+    name: brewco-crm
+    runtime: python
+    plan: free
+    rootDir: crm-service
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: brewco-db
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false       # set manually in dashboard
+      - key: CHANNEL_SERVICE_URL
+        fromService:
+          type: web
+          name: brewco-channel
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: CRM_SERVICE_URL
+        fromService:
+          type: web
+          name: brewco-crm
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: NODE_VERSION
+        value: "20.11.1"
+
+  # ── Channel Service ────────────────────────────────────────────────────────
+  - type: web
+    name: brewco-channel
+    runtime: python
+    plan: free
+    rootDir: channel-service
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn app.main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    envVars:
+      - key: CRM_CALLBACK_URL
+        fromService:
+          type: web
+          name: brewco-crm
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: PYTHON_VERSION
+        value: "3.11.9"

@@ -66,6 +66,30 @@ Open **http://localhost:8000/docs** to explore the API via Swagger UI.
 
 ---
 
+## Deploy to Render (Production)
+
+This project includes a `render.yaml` Blueprint for **one-click deployment**.
+
+### Option A — Blueprint (Recommended)
+1. Push this repo to GitHub
+2. Go to [Render Dashboard](https://dashboard.render.com/) → **New** → **Blueprint**
+3. Connect your GitHub repo and select the `main` branch
+4. Render auto-detects `render.yaml` and creates:
+   - **brewco-crm** — CRM backend + React frontend (Python web service)
+   - **brewco-channel** — Channel simulation service (Python web service)
+   - **brewco-db** — PostgreSQL database (free tier)
+5. Set `OPENAI_API_KEY` manually in the brewco-crm service environment
+6. Deploy! The build script handles: pip install → npm build → migrations → seed
+
+### Option B — Manual Setup
+1. Create a PostgreSQL database on Render
+2. Create two Web Services pointing to `crm-service/` and `channel-service/`
+3. Set environment variables (see below)
+4. Build command: `chmod +x build.sh && ./build.sh`
+5. Start command: `gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT`
+
+---
+
 ## Environment Variables
 
 ### crm-service/.env

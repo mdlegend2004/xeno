@@ -18,6 +18,12 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:password@localhost:5432/brewco")
 
+# Render provides postgres://… but asyncpg needs postgresql+asyncpg://…
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 # pool_pre_ping=True: validates connections before use (handles DB restarts)
 engine = create_async_engine(
     DATABASE_URL,
