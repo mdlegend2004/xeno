@@ -12,6 +12,9 @@ from datetime import datetime, timedelta
 from app.db.database import engine, AsyncSessionLocal, Base
 from app.models.customer import Customer
 from app.models.order import Order
+from app.models.segment import Segment           # noqa: F401 — needed for mapper
+from app.models.campaign import Campaign          # noqa: F401 — needed for mapper
+from app.models.communication import Communication  # noqa: F401 — needed for mapper
 
 # ── Sample data pools ─────────────────────────────────────────────────────────
 
